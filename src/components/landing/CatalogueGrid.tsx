@@ -7,7 +7,6 @@ type Device = {
   name: string
   type: string
   status: string
-  price: string
   featured?: boolean
 }
 
@@ -78,8 +77,6 @@ export default function CatalogueGrid({ devices }: { devices: Device[] }) {
               <option value="popular">Most popular</option>
               <option value="newest">Newest first</option>
               <option value="oldest">Oldest first</option>
-              <option value="price-low">Price: low to high</option>
-              <option value="price-high">Price: high to low</option>
               <option value="name-asc">Name: A to Z</option>
               <option value="name-desc">Name: Z to A</option>
               <option value="featured">Featured first</option>

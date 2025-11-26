@@ -9,7 +9,6 @@ type Device = {
   name: string
   type: string
   status: string
-  price: string
   featured?: boolean
 }
 
@@ -21,25 +20,7 @@ const typeIcons: Record<string, React.ReactNode> = {
 
 export default function ProductCard({ device }: { device: Device }) {
   const isAvailable = device.status === "Available"
-  const priceValue = device.price.replace("/day", "").trim()
   const [isFavorited, setIsFavorited] = useState(false)
-  
-  // Calculate semester price with discount (90 days)
-  // Semester rentals get 45% discount for bulk pricing
-  const dailyPrice = parseFloat(priceValue.replace("£", "").replace(",", ""))
-  const fullSemesterPrice = dailyPrice * 90
-  const discountPercent = 45
-  const semesterPrice = fullSemesterPrice * (1 - discountPercent / 100)
-  const formattedSemesterPrice = semesterPrice.toLocaleString('en-GB', { 
-    style: 'currency', 
-    currency: 'GBP',
-    maximumFractionDigits: 0 
-  })
-  const formattedOriginalPrice = fullSemesterPrice.toLocaleString('en-GB', { 
-    style: 'currency', 
-    currency: 'GBP',
-    maximumFractionDigits: 0 
-  })
   
   return (
     <article className="group relative">
@@ -72,24 +53,11 @@ export default function ProductCard({ device }: { device: Device }) {
           )}
         </div>
 
-        {/* Title and Price */}
+        {/* Title */}
         <div className="space-y-2">
           <h3 className="font-bold text-base leading-tight text-card-foreground">{device.name}</h3>
           <div className="flex items-center justify-between">
             <span className="text-xs text-muted-foreground uppercase tracking-wide">{device.type}</span>
-            <div className="flex flex-col items-end">
-              <div className="flex items-center gap-1">
-                <span className="text-lg font-bold text-card-foreground">{priceValue}</span>
-                <span className="text-sm text-muted-foreground">/day</span>
-              </div>
-              <div className="flex flex-col items-end mt-0.5">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xs font-semibold text-card-foreground">{formattedSemesterPrice}</span>
-                  <span className="text-xs text-muted-foreground">/semester</span>
-                </div>
-                <span className="text-[10px] text-neutral-400 line-through">{formattedOriginalPrice}</span>
-              </div>
-            </div>
           </div>
         </div>
 

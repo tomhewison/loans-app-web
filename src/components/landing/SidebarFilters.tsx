@@ -15,9 +15,6 @@ const categoryIcons: Record<string, React.ReactNode> = {
 export default function SidebarFilters({ categories = [] as string[] }: { categories?: string[] }) {
   const [selectedCategory, setSelectedCategory] = useState<string>("All")
   const [availableOnly, setAvailableOnly] = useState(false)
-  const [minPrice, setMinPrice] = useState(5)
-  const [maxPrice, setMaxPrice] = useState(15)
-  const averagePrice = 8
 
   // Date states
   const today = new Date().toISOString().split('T')[0]
@@ -41,135 +38,16 @@ export default function SidebarFilters({ categories = [] as string[] }: { catego
 
   const endDate = calculateEndDate(startDate, selectedDuration)
 
-  const handleResetPrice = () => {
-    setMinPrice(5)
-    setMaxPrice(15)
-  }
-
   const handleResetDates = () => {
     setStartDate(today)
     setSelectedDuration("1 week")
   }
 
-  const priceRange = 15 - 5
-  const minPercent = ((minPrice - 5) / priceRange) * 100
-  const maxPercent = ((maxPrice - 5) / priceRange) * 100
-
   return (
     <aside className="col-span-1 md:col-span-1">
       <Card className="sticky top-6 p-5 rounded-2xl border-0 bg-card shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
-        {/* Price Range */}
-        <div className="mb-5">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-bold text-card-foreground">Price Range</h3>
-            <button
-              onClick={handleResetPrice}
-              className="text-xs text-muted-foreground hover:text-card-foreground transition-colors flex items-center gap-1"
-              aria-label="Reset price range"
-            >
-              <X className="h-3 w-3" />
-              Reset
-            </button>
-          </div>
-          <p className="text-xs text-neutral-600 mb-4">The average price is £{averagePrice}.</p>
-          
-          {/* Distribution graph */}
-          <div className="relative h-12 mb-4">
-            <div className="absolute inset-0 rounded-lg overflow-hidden">
-              {/* Distribution bars */}
-              <div className="absolute inset-0 flex items-end gap-px">
-                {Array.from({ length: 50 }).map((_, i) => {
-                  const height = Math.random() * 60 + 20
-                  const left = (i / 50) * 100
-                  return (
-                    <div
-                      key={i}
-                      className="bg-primary/30 rounded-t"
-                      style={{
-                        width: '2%',
-                        height: `${height}%`,
-                        position: 'absolute',
-                        left: `${left}%`,
-                      }}
-                    />
-                  )
-                })}
-              </div>
-            </div>
-          </div>
-
-          {/* Range slider container */}
-          <div className="relative h-12">
-            {/* Track */}
-            <div className="absolute top-1/2 -translate-y-1/2 w-full h-2.5 bg-neutral-200 rounded-full">
-              {/* Active range */}
-              <div
-                className="absolute h-2.5 bg-primary rounded-full"
-                style={{
-                  left: `${minPercent}%`,
-                  width: `${maxPercent - minPercent}%`,
-                }}
-              />
-            </div>
-
-            {/* Min slider */}
-            <input
-              type="range"
-              min="5"
-              max="15"
-              step="0.5"
-              value={minPrice}
-              onChange={(e) => {
-                const newMin = parseFloat(e.target.value)
-                if (newMin < maxPrice) setMinPrice(newMin)
-              }}
-              className="absolute top-0 w-full h-full opacity-0 cursor-pointer z-10"
-              style={{ 
-                WebkitAppearance: 'none',
-                appearance: 'none',
-                background: 'transparent'
-              }}
-            />
-            
-            {/* Max slider */}
-            <input
-              type="range"
-              min="5"
-              max="15"
-              step="0.5"
-              value={maxPrice}
-              onChange={(e) => {
-                const newMax = parseFloat(e.target.value)
-                if (newMax > minPrice) setMaxPrice(newMax)
-              }}
-              className="absolute top-0 w-full h-full opacity-0 cursor-pointer z-10"
-              style={{ 
-                WebkitAppearance: 'none',
-                appearance: 'none',
-                background: 'transparent'
-              }}
-            />
-
-            {/* Custom handles */}
-            <div
-              className="absolute top-1/2 -translate-y-1/2 w-5 h-5 bg-card border-2 border-primary rounded-full shadow-lg pointer-events-none z-20"
-              style={{ left: `calc(${minPercent}% - 10px)` }}
-            />
-            <div
-              className="absolute top-1/2 -translate-y-1/2 w-5 h-5 bg-card border-2 border-primary rounded-full shadow-lg pointer-events-none z-20"
-              style={{ left: `calc(${maxPercent}% - 10px)` }}
-            />
-
-            {/* Price labels */}
-            <div className="flex justify-between mt-8">
-              <span className="text-xs font-semibold text-card-foreground">£{minPrice.toFixed(1)}</span>
-              <span className="text-xs font-semibold text-card-foreground">£{maxPrice.toFixed(1)}</span>
-            </div>
-          </div>
-        </div>
-
         {/* Rental Dates */}
-        <div className="mb-5 pt-5 border-t border-border">
+        <div className="mb-5">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-bold text-card-foreground">Rental Dates</h3>
             <button

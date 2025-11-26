@@ -9,7 +9,7 @@ export default function Header() {
 
   return (
     <div className="mb-2">
-      <header className="mb-4 flex items-center justify-between px-5 py-3.5 rounded-xl border-0 bg-card shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
+      <header className="mb-4 flex items-center justify-between px-5 py-3.5 rounded-xl border-0 shadow-[0_2px_8px_rgba(0,0,0,0.06)]" style={{ backgroundColor: 'var(--card)', opacity: 1 }}>
         <div className="flex items-center gap-3">
           <Link to="/" className="flex items-center gap-2.5">
             <img src={tessideLogo} alt="Teesside University" width={45} height={36} className="shrink-0" />

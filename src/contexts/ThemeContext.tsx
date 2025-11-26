@@ -14,11 +14,11 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() => {
-    // Get theme from localStorage or default to 'sunset'
+    // Get theme from localStorage or default to 'original'
     const savedTheme = localStorage.getItem('theme') as Theme | null
     return savedTheme && ['original', 'ocean', 'sunset', 'wireframe'].includes(savedTheme) 
       ? savedTheme 
-      : 'sunset'
+      : 'original'
   })
 
   const [isDarkMode, setIsDarkModeState] = useState<boolean>(() => {
