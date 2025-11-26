@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { MessageCircle, X, Send, Minimize2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
 
 interface Message {
   id: string

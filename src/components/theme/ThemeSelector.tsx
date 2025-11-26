@@ -1,6 +1,6 @@
 import { Palette, Check, Moon, Sun } from "lucide-react"
 import { useState } from "react"
-import { useTheme, getThemeInfo, getAllThemes, type Theme } from "@/contexts/ThemeContext"
+import { useTheme, getThemeInfo, getAllThemes } from "@/contexts/ThemeContext"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Separator } from "@/components/ui/separator"

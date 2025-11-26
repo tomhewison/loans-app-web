@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { themeData } from './themeData'
 
 export type Theme = 'original' | 'ocean' | 'sunset' | 'wireframe'
