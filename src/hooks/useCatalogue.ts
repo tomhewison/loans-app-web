@@ -2,8 +2,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuth0 } from '@/contexts/AuthContext'
 import * as catalogueService from '@/services/catalogue'
 import type {
-  DeviceModel,
-  Device,
+  // DeviceModel,
+  // Device,
   DeviceModelFilters,
   CreateDeviceModelParams,
   UpdateDeviceModelParams,

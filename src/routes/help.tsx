@@ -3,9 +3,7 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { 
   HelpCircle, 
-  MessageCircle, 
   Mail, 
-  Phone, 
   Clock, 
   Shield, 
   AlertCircle,
@@ -13,7 +11,6 @@ import {
   ArrowRight,
   BookOpen,
   FileText,
-  Users
 } from 'lucide-react'
 
 export const Route = createFileRoute('/help')({
