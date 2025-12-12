@@ -1,8 +1,9 @@
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Laptop, Tablet, Camera, Package, Grid3x3, X, Calendar } from "lucide-react"
+import { Laptop, Tablet, Camera, Package, Grid3x3, X, Calendar, LogIn } from "lucide-react"
 import { useState } from "react"
+import { useAuth0 } from "@/contexts/AuthContext"
 
 const categoryIcons: Record<string, React.ReactNode> = {
   All: <Grid3x3 className="h-4 w-4" />,
@@ -13,6 +14,7 @@ const categoryIcons: Record<string, React.ReactNode> = {
 }
 
 export default function SidebarFilters({ categories = [] as string[] }: { categories?: string[] }) {
+  const { isAuthenticated } = useAuth0()
   const [selectedCategory, setSelectedCategory] = useState<string>("All")
   const [availableOnly, setAvailableOnly] = useState(false)
 
@@ -47,65 +49,82 @@ export default function SidebarFilters({ categories = [] as string[] }: { catego
     <aside className="col-span-1 md:col-span-1">
       <Card className="sticky top-6 p-5 rounded-2xl border-0 bg-card shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
         {/* Rental Dates */}
-        <div className="mb-5">
+        <div className="mb-5 relative">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-bold text-card-foreground">Rental Dates</h3>
-            <button
-              onClick={handleResetDates}
-              className="text-xs text-muted-foreground hover:text-card-foreground transition-colors flex items-center gap-1"
-              aria-label="Reset rental dates"
-            >
-              <X className="h-3 w-3" />
-              Reset
-            </button>
+            {isAuthenticated && (
+              <button
+                onClick={handleResetDates}
+                className="text-xs text-muted-foreground hover:text-card-foreground transition-colors flex items-center gap-1"
+                aria-label="Reset rental dates"
+              >
+                <X className="h-3 w-3" />
+                Reset
+              </button>
+            )}
           </div>
           
-          <div className="space-y-3">
-            {/* Start Date */}
-            <div>
-              <label className="text-xs text-neutral-600 mb-1.5 block">Start Date</label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400 pointer-events-none" />
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  min={today}
-                  className="w-full pl-10 pr-3 py-2 rounded-lg border-0 bg-input text-sm font-medium text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 cursor-pointer"
-                  aria-label="Select start date"
-                />
+          <div className="relative">
+            {/* Login Required Overlay - covers entire content area */}
+            {!isAuthenticated && (
+              <div className="absolute inset-0 z-10 bg-background/80 backdrop-blur-sm rounded-lg flex flex-col items-center justify-center gap-2 p-4">
+                <LogIn className="h-6 w-6 text-muted-foreground" />
+                <p className="text-sm font-semibold text-card-foreground">Login Required</p>
+                <p className="text-xs text-muted-foreground text-center">
+                  Please log in to filter by rental dates
+                </p>
               </div>
-            </div>
-
-            {/* Duration Presets */}
-            <div>
-              <label className="text-xs text-neutral-600 mb-2 block">Duration</label>
-              <div className="grid grid-cols-2 gap-2">
-                {durationPresets.map((preset) => {
-                  const isActive = selectedDuration === preset.label
-                  return (
-                    <button
-                      key={preset.label}
-                      onClick={() => setSelectedDuration(preset.label)}
-                      className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
-                        isActive
-                          ? "bg-primary text-primary-foreground shadow-md"
-                          : "bg-input text-card-foreground hover:bg-neutral-100"
-                      }`}
-                      aria-pressed={isActive}
-                    >
-                      {preset.label}
-                    </button>
-                  )
-                })}
+            )}
+            
+            <div className="space-y-3">
+              {/* Start Date */}
+              <div>
+                <label className="text-xs text-neutral-600 mb-1.5 block">Start Date</label>
+                <div className="relative">
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400 pointer-events-none" />
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    min={today}
+                    disabled={!isAuthenticated}
+                    className="w-full pl-10 pr-3 py-2 rounded-lg border-0 bg-input text-sm font-medium text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    aria-label="Select start date"
+                  />
+                </div>
               </div>
-            </div>
 
-            {/* End Date Display */}
-            <div className="pt-2 border-t border-border">
-              <p className="text-xs text-neutral-600">
-                End Date: <span className="font-semibold text-card-foreground">{new Date(endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-              </p>
+              {/* Duration Presets */}
+              <div>
+                <label className="text-xs text-neutral-600 mb-2 block">Duration</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {durationPresets.map((preset) => {
+                    const isActive = selectedDuration === preset.label
+                    return (
+                      <button
+                        key={preset.label}
+                        onClick={() => setSelectedDuration(preset.label)}
+                        disabled={!isAuthenticated}
+                        className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                          isActive
+                            ? "bg-primary text-primary-foreground shadow-md"
+                            : "bg-input text-card-foreground hover:bg-neutral-100"
+                        }`}
+                        aria-pressed={isActive}
+                      >
+                        {preset.label}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* End Date Display */}
+              <div className="pt-2 border-t border-border">
+                <p className="text-xs text-neutral-600">
+                  End Date: <span className="font-semibold text-card-foreground">{new Date(endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                </p>
+              </div>
             </div>
           </div>
         </div>

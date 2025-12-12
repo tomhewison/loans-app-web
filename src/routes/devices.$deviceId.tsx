@@ -3,6 +3,7 @@ import { useDeviceModel } from '@/hooks/useCatalogue'
 import { DeviceCategory } from '@/services/types'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import { 
   ArrowLeft, 
   Loader2, 
@@ -36,6 +37,14 @@ const categoryIcons: Record<string, React.ReactNode> = {
 }
 
 function DeviceDetail() {
+  return (
+    <ProtectedRoute>
+      <DeviceDetailContent />
+    </ProtectedRoute>
+  )
+}
+
+function DeviceDetailContent() {
   const { deviceId } = Route.useParams()
   const { data: deviceModel, isLoading, error } = useDeviceModel(deviceId)
   const [imageError, setImageError] = useState(false)

@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ReservationsRouteImport } from './routes/reservations'
 import { Route as PoliciesRouteImport } from './routes/policies'
 import { Route as HelpRouteImport } from './routes/help'
+import { Route as HealthRouteImport } from './routes/health'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CatalogueRouteImport } from './routes/catalogue'
 import { Route as IndexRouteImport } from './routes/index'
@@ -30,6 +31,11 @@ const PoliciesRoute = PoliciesRouteImport.update({
 const HelpRoute = HelpRouteImport.update({
   id: '/help',
   path: '/help',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HealthRoute = HealthRouteImport.update({
+  id: '/health',
+  path: '/health',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/catalogue': typeof CatalogueRoute
   '/contact': typeof ContactRoute
+  '/health': typeof HealthRoute
   '/help': typeof HelpRoute
   '/policies': typeof PoliciesRoute
   '/reservations': typeof ReservationsRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/catalogue': typeof CatalogueRoute
   '/contact': typeof ContactRoute
+  '/health': typeof HealthRoute
   '/help': typeof HelpRoute
   '/policies': typeof PoliciesRoute
   '/reservations': typeof ReservationsRoute
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/catalogue': typeof CatalogueRoute
   '/contact': typeof ContactRoute
+  '/health': typeof HealthRoute
   '/help': typeof HelpRoute
   '/policies': typeof PoliciesRoute
   '/reservations': typeof ReservationsRoute
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/catalogue'
     | '/contact'
+    | '/health'
     | '/help'
     | '/policies'
     | '/reservations'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/catalogue'
     | '/contact'
+    | '/health'
     | '/help'
     | '/policies'
     | '/reservations'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/catalogue'
     | '/contact'
+    | '/health'
     | '/help'
     | '/policies'
     | '/reservations'
@@ -115,6 +127,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CatalogueRoute: typeof CatalogueRoute
   ContactRoute: typeof ContactRoute
+  HealthRoute: typeof HealthRoute
   HelpRoute: typeof HelpRoute
   PoliciesRoute: typeof PoliciesRoute
   ReservationsRoute: typeof ReservationsRoute
@@ -142,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: '/help'
       fullPath: '/help'
       preLoaderRoute: typeof HelpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/health': {
+      id: '/health'
+      path: '/health'
+      fullPath: '/health'
+      preLoaderRoute: typeof HealthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -179,6 +199,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CatalogueRoute: CatalogueRoute,
   ContactRoute: ContactRoute,
+  HealthRoute: HealthRoute,
   HelpRoute: HelpRoute,
   PoliciesRoute: PoliciesRoute,
   ReservationsRoute: ReservationsRoute,

@@ -105,3 +105,47 @@ export interface UpdateDeviceParams {
   purchaseDate?: string
 }
 
+// Reservation types
+export const ReservationStatus = {
+  Reserved: 'Reserved',
+  Collected: 'Collected',
+  Returned: 'Returned',
+  Cancelled: 'Cancelled',
+} as const
+
+export type ReservationStatus = typeof ReservationStatus[keyof typeof ReservationStatus]
+
+export interface Reservation {
+  id: string
+  deviceId: string
+  userId: string
+  startDate: string
+  endDate: string
+  status: ReservationStatus
+  createdAt: string
+}
+
+export interface CreateReservationRequest {
+  deviceId: string
+  startDate: string
+  endDate: string
+}
+
+// Health check types
+export interface HealthStatus {
+  status: 'healthy' | 'unhealthy'
+  service: string
+  timestamp: string
+  error?: string
+}
+
+export type ServiceName = 'catalogue' | 'availability' | 'reservations' | 'management' | 'notifications'
+
+export interface ServiceHealth {
+  name: ServiceName
+  displayName: string
+  status: HealthStatus | null
+  isLoading: boolean
+  error: Error | null
+}
+
