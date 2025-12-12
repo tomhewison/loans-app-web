@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import SidebarFilters from "@/components/landing/SidebarFilters"
-import CatalogueGrid from "@/components/landing/CatalogueGrid"
+import SidebarFilters from "@/components/catalogue/SidebarFilters"
+import CatalogueGrid from "@/components/catalogue/CatalogueGrid"
 import AIChat from "@/components/ai-chat/AIChat"
 import { ArrowLeft, X, FileText, AlertCircle } from 'lucide-react'
 import { useState, useEffect } from 'react'

@@ -1,4 +1,4 @@
-import ProductCard from "@/components/landing/ProductCard"
+import ProductCard from "@/components/catalogue/ProductCard"
 import { ArrowUpDown, Search, Loader2 } from "lucide-react"
 import { useState } from "react"
 import { useDeviceModels } from "@/hooks/useCatalogue"

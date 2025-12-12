@@ -22,7 +22,7 @@ export default function SidebarFilters({ categories = [] as string[] }: { catego
   const today = new Date().toISOString().split('T')[0]
   const [startDate, setStartDate] = useState(today)
   const [selectedDuration, setSelectedDuration] = useState<string>("1 week")
-  
+
   const durationPresets = [
     { label: "1 day", days: 1 },
     { label: "3 days", days: 3 },
@@ -63,32 +63,28 @@ export default function SidebarFilters({ categories = [] as string[] }: { catego
               </button>
             )}
           </div>
-          
-          <div className="relative">
-            {/* Login Required Overlay - covers entire content area */}
-            {!isAuthenticated && (
-              <div className="absolute inset-0 z-10 bg-background/80 backdrop-blur-sm rounded-lg flex flex-col items-center justify-center gap-2 p-4">
-                <LogIn className="h-6 w-6 text-muted-foreground" />
-                <p className="text-sm font-semibold text-card-foreground">Login Required</p>
-                <p className="text-xs text-muted-foreground text-center">
-                  Please log in to filter by rental dates
-                </p>
-              </div>
-            )}
-            
+
+          {!isAuthenticated ? (
+            <div className="bg-muted/50 rounded-lg flex flex-col items-center justify-center gap-2 p-6">
+              <LogIn className="h-6 w-6 text-muted-foreground" />
+              <p className="text-sm font-semibold text-card-foreground">Login Required</p>
+              <p className="text-xs text-muted-foreground text-center">
+                Please log in to filter by rental dates
+              </p>
+            </div>
+          ) : (
             <div className="space-y-3">
               {/* Start Date */}
               <div>
-                <label className="text-xs text-neutral-600 mb-1.5 block">Start Date</label>
+                <label className="text-xs text-muted-foreground mb-1.5 block">Start Date</label>
                 <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400 pointer-events-none" />
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                   <input
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
                     min={today}
-                    disabled={!isAuthenticated}
-                    className="w-full pl-10 pr-3 py-2 rounded-lg border-0 bg-input text-sm font-medium text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full pl-10 pr-3 py-2 rounded-lg border-0 bg-input text-sm font-medium text-card-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 cursor-pointer"
                     aria-label="Select start date"
                   />
                 </div>
@@ -96,7 +92,7 @@ export default function SidebarFilters({ categories = [] as string[] }: { catego
 
               {/* Duration Presets */}
               <div>
-                <label className="text-xs text-neutral-600 mb-2 block">Duration</label>
+                <label className="text-xs text-muted-foreground mb-2 block">Duration</label>
                 <div className="grid grid-cols-2 gap-2">
                   {durationPresets.map((preset) => {
                     const isActive = selectedDuration === preset.label
@@ -104,12 +100,10 @@ export default function SidebarFilters({ categories = [] as string[] }: { catego
                       <button
                         key={preset.label}
                         onClick={() => setSelectedDuration(preset.label)}
-                        disabled={!isAuthenticated}
-                        className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
-                          isActive
+                        className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${isActive
                             ? "bg-primary text-primary-foreground shadow-md"
-                            : "bg-input text-card-foreground hover:bg-neutral-100"
-                        }`}
+                            : "bg-input text-card-foreground hover:bg-accent"
+                          }`}
                         aria-pressed={isActive}
                       >
                         {preset.label}
@@ -121,12 +115,12 @@ export default function SidebarFilters({ categories = [] as string[] }: { catego
 
               {/* End Date Display */}
               <div className="pt-2 border-t border-border">
-                <p className="text-xs text-neutral-600">
+                <p className="text-xs text-muted-foreground">
                   End Date: <span className="font-semibold text-card-foreground">{new Date(endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                 </p>
               </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="mb-5 pt-5 border-t border-border">
