@@ -111,24 +111,41 @@ export const ReservationStatus = {
   Collected: 'Collected',
   Returned: 'Returned',
   Cancelled: 'Cancelled',
+  Expired: 'Expired'
 } as const
 
 export type ReservationStatus = typeof ReservationStatus[keyof typeof ReservationStatus]
 
 export interface Reservation {
   id: string
-  deviceId: string
   userId: string
-  startDate: string
-  endDate: string
+  userEmail: string
+  deviceId: string
+  deviceModelId: string
   status: ReservationStatus
-  createdAt: string
+  reservedAt: string
+  expiresAt: string
+  collectedAt?: string
+  returnDueAt?: string
+  returnedAt?: string
+  cancelledAt?: string
+  notes?: string
+  updatedAt: string
 }
 
-export interface CreateReservationRequest {
+export interface CreateReservationParams {
   deviceId: string
-  startDate: string
-  endDate: string
+  deviceModelId: string
+  notes?: string
+}
+
+// Availability response from catalogue service
+export interface DeviceModelAvailability {
+  deviceModelId: string
+  totalDevices: number
+  availableCount: number
+  canReserve: boolean
+  availableDeviceId?: string
 }
 
 // Health check types
@@ -148,4 +165,3 @@ export interface ServiceHealth {
   isLoading: boolean
   error: Error | null
 }
-

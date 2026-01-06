@@ -1,4 +1,5 @@
-const API_URL = import.meta.env.VITE_API_URL || ''
+// Normalize API URL - remove trailing slash if present
+const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '')
 const APIM_SUBSCRIPTION_KEY = import.meta.env.VITE_APIM_SUBSCRIPTION_KEY || ''
 
 export class ApiError extends Error {

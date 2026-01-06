@@ -7,6 +7,7 @@ import type {
   UpdateDeviceModelParams,
   CreateDeviceParams,
   UpdateDeviceParams,
+  DeviceModelAvailability,
 } from './types'
 
 // ============================================
@@ -81,6 +82,17 @@ export async function deleteDeviceModel(
     method: 'DELETE',
     token,
   })
+}
+
+/**
+ * Get device availability for a device model (authenticated)
+ * Returns available count and device ID for reservation
+ */
+export async function getDeviceModelAvailability(
+  id: string,
+  token: string
+): Promise<DeviceModelAvailability> {
+  return apiFetch<DeviceModelAvailability>(`${BASE_PATH}/device-models/${id}/availability`, { token })
 }
 
 // ============================================

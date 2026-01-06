@@ -147,11 +147,11 @@ export default function CatalogueGrid() {
 
       {/* Grid - Responsive: 1 col mobile, 2 cols tablet, 3 cols desktop */}
       {!isLoading && !error && deviceModels && deviceModels.length > 0 && (
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
           {deviceModels.map((model) => (
             <ProductCard key={model.id} deviceModel={model} />
-          ))}
-        </div>
+        ))}
+      </div>
       )}
     </section>
   )
