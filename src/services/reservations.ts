@@ -1,7 +1,7 @@
 import { apiFetch } from './api'
 import type { Reservation, CreateReservationRequest } from './types'
 
-const BASE_PATH = '/reservations'
+const BASE_PATH = '/proxy/reservations'
 
 /**
  * List user's reservations (students see own, staff see all)

@@ -1,5 +1,4 @@
 const API_URL = import.meta.env.VITE_API_URL || ''
-const APIM_SUBSCRIPTION_KEY = import.meta.env.VITE_APIM_SUBSCRIPTION_KEY || ''
 
 export class ApiError extends Error {
   status: number
@@ -28,11 +27,6 @@ export async function apiFetch<T>(
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-  }
-
-  // Add APIM subscription key if configured
-  if (APIM_SUBSCRIPTION_KEY) {
-    headers['Ocp-Apim-Subscription-Key'] = APIM_SUBSCRIPTION_KEY
   }
 
   // Merge existing headers

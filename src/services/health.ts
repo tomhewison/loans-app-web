@@ -2,11 +2,11 @@ import { apiFetch } from './api'
 import type { HealthStatus, ServiceName } from './types'
 
 const SERVICE_PATHS: Record<ServiceName, string> = {
-  catalogue: '/catalogue',
-  availability: '/availability',
-  reservations: '/reservations',
-  management: '/management',
-  notifications: '/notifications',
+  catalogue: '/proxy/catalogue',
+  availability: '/proxy/availability',
+  reservations: '/proxy/reservations',
+  management: '/proxy/management',
+  notifications: '/proxy/notifications',
 }
 
 /**
@@ -23,8 +23,8 @@ export async function checkServiceHealth(serviceName: ServiceName): Promise<Heal
       error instanceof Error
         ? error.message
         : typeof error === 'string'
-        ? error
-        : 'Service unavailable'
+          ? error
+          : 'Service unavailable'
     return {
       status: 'unhealthy',
       service: serviceName,

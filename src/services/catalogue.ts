@@ -13,7 +13,7 @@ import type {
 // Device Models (Public catalogue items)
 // ============================================
 
-const BASE_PATH = '/catalogue'
+const BASE_PATH = '/proxy/catalogue'
 
 /**
  * List all device models with optional filters (public)
