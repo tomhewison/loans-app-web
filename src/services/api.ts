@@ -1,4 +1,5 @@
-const API_URL = import.meta.env.VITE_API_URL || ''
+// Normalize API URL - remove trailing slash if present
+const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '')
 
 export class ApiError extends Error {
   status: number

@@ -1,17 +1,24 @@
 import { apiFetch } from './api'
-import type { Reservation, CreateReservationRequest } from './types'
+import type { Reservation, CreateReservationParams } from './types'
 
 const BASE_PATH = '/proxy/reservations'
 
 /**
- * List user's reservations (students see own, staff see all)
+ * Get current user's reservations
  */
-export async function listReservations(token: string): Promise<Reservation[]> {
+export async function getMyReservations(token: string): Promise<Reservation[]> {
+  return apiFetch<Reservation[]>(`${BASE_PATH}/my-reservations`, { token })
+}
+
+/**
+ * Get all reservations (staff only)
+ */
+export async function getAllReservations(token: string): Promise<Reservation[]> {
   return apiFetch<Reservation[]>(BASE_PATH, { token })
 }
 
 /**
- * Get a single reservation by ID
+ * Get a specific reservation by ID
  */
 export async function getReservation(id: string, token: string): Promise<Reservation> {
   return apiFetch<Reservation>(`${BASE_PATH}/${id}`, { token })
@@ -21,7 +28,7 @@ export async function getReservation(id: string, token: string): Promise<Reserva
  * Create a new reservation
  */
 export async function createReservation(
-  params: CreateReservationRequest,
+  params: CreateReservationParams,
   token: string
 ): Promise<Reservation> {
   return apiFetch<Reservation>(BASE_PATH, {
@@ -34,10 +41,7 @@ export async function createReservation(
 /**
  * Cancel a reservation
  */
-export async function cancelReservation(
-  id: string,
-  token: string
-): Promise<Reservation> {
+export async function cancelReservation(id: string, token: string): Promise<Reservation> {
   return apiFetch<Reservation>(`${BASE_PATH}/${id}/cancel`, {
     method: 'PUT',
     token,

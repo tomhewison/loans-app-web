@@ -1,46 +1,90 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useAuth0 } from '@/contexts/AuthContext'
-import * as reservationService from '@/services/reservations'
-import type { CreateReservationRequest } from '@/services/types'
+import { useAuth0 } from '@auth0/auth0-react'
+import {
+  getMyReservations,
+  getAllReservations,
+  getReservation,
+  createReservation,
+  cancelReservation,
+} from '@/services/reservations'
+import type { CreateReservationParams } from '@/services/types'
 
-// Query keys for cache management
-export const reservationKeys = {
-  all: ['reservations'] as const,
-  lists: () => [...reservationKeys.all, 'list'] as const,
-  list: () => [...reservationKeys.lists()] as const,
-  details: () => [...reservationKeys.all, 'detail'] as const,
-  detail: (id: string) => [...reservationKeys.details(), id] as const,
+const QUERY_KEYS = {
+  myReservations: ['my-reservations'] as const,
+  allReservations: ['all-reservations'] as const,
+  reservation: (id: string) => ['reservation', id] as const,
+}
+
+const AUTH0_AUDIENCE = import.meta.env.VITE_AUTH0_AUDIENCE
+
+/**
+ * Hook to get a fresh access token
+ */
+function useAccessToken() {
+  const { getAccessTokenSilently } = useAuth0()
+  return async () => {
+    try {
+      const token = await getAccessTokenSilently({
+        authorizationParams: {
+          audience: AUTH0_AUDIENCE,
+        },
+      })
+      return token
+    } catch (error) {
+      console.error('Failed to get access token:', error)
+      throw new Error('Unable to get access token. Please log in again.')
+    }
+  }
 }
 
 /**
- * Hook to fetch list of user's reservations
+ * Hook to fetch current user's reservations
  */
-export function useReservations() {
-  const { getAccessTokenSilently, isAuthenticated } = useAuth0()
+export function useMyReservations() {
+  const { isAuthenticated } = useAuth0()
+  const getToken = useAccessToken()
 
   return useQuery({
-    queryKey: reservationKeys.list(),
+    queryKey: QUERY_KEYS.myReservations,
     queryFn: async () => {
-      const token = await getAccessTokenSilently()
-      return reservationService.listReservations(token)
+      const token = await getToken()
+      return getMyReservations(token)
     },
     enabled: isAuthenticated,
   })
 }
 
 /**
- * Hook to fetch a single reservation by ID
+ * Hook to fetch all reservations (staff only)
  */
-export function useReservation(id: string) {
-  const { getAccessTokenSilently, isAuthenticated } = useAuth0()
+export function useAllReservations() {
+  const { isAuthenticated } = useAuth0()
+  const getToken = useAccessToken()
 
   return useQuery({
-    queryKey: reservationKeys.detail(id),
+    queryKey: QUERY_KEYS.allReservations,
     queryFn: async () => {
-      const token = await getAccessTokenSilently()
-      return reservationService.getReservation(id, token)
+      const token = await getToken()
+      return getAllReservations(token)
     },
-    enabled: !!id && isAuthenticated,
+    enabled: isAuthenticated,
+  })
+}
+
+/**
+ * Hook to fetch a single reservation
+ */
+export function useReservation(id: string) {
+  const { isAuthenticated } = useAuth0()
+  const getToken = useAccessToken()
+
+  return useQuery({
+    queryKey: QUERY_KEYS.reservation(id),
+    queryFn: async () => {
+      const token = await getToken()
+      return getReservation(id, token)
+    },
+    enabled: isAuthenticated && !!id,
   })
 }
 
@@ -49,15 +93,17 @@ export function useReservation(id: string) {
  */
 export function useCreateReservation() {
   const queryClient = useQueryClient()
-  const { getAccessTokenSilently } = useAuth0()
+  const getToken = useAccessToken()
 
   return useMutation({
-    mutationFn: async (params: CreateReservationRequest) => {
-      const token = await getAccessTokenSilently()
-      return reservationService.createReservation(params, token)
+    mutationFn: async (params: CreateReservationParams) => {
+      const token = await getToken()
+      return createReservation(params, token)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: reservationKeys.all })
+      // Invalidate reservations list to refetch
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.myReservations })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.allReservations })
     },
   })
 }
@@ -67,15 +113,18 @@ export function useCreateReservation() {
  */
 export function useCancelReservation() {
   const queryClient = useQueryClient()
-  const { getAccessTokenSilently } = useAuth0()
+  const getToken = useAccessToken()
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const token = await getAccessTokenSilently()
-      return reservationService.cancelReservation(id, token)
+      const token = await getToken()
+      return cancelReservation(id, token)
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: reservationKeys.all })
+    onSuccess: (_, id) => {
+      // Invalidate both lists and the specific reservation
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.myReservations })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.allReservations })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.reservation(id) })
     },
   })
 }
