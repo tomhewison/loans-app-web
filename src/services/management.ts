@@ -5,7 +5,7 @@ import type { DashboardStats, ReservationSummary, ReservationFilters } from './t
  * Get dashboard statistics (staff only)
  */
 export async function getDashboardStats(): Promise<DashboardStats> {
-    return apiFetch<DashboardStats>('/proxy/dashboard/stats')
+    return apiFetch<DashboardStats>('/proxy/admin/dashboard/stats')
 }
 
 /**
@@ -27,7 +27,7 @@ export async function listAllReservations(
     }
 
     const query = params.toString()
-    const endpoint = query ? `/proxy/admin/reservations?${query}` : '/proxy/admin/reservations'
+    const endpoint = query ? `/proxy/admin/admin/reservations?${query}` : '/proxy/admin/admin/reservations'
 
     return apiFetch<ReservationSummary[]>(endpoint)
 }
@@ -36,12 +36,12 @@ export async function listAllReservations(
  * List overdue reservations (staff only)
  */
 export async function listOverdueReservations(): Promise<ReservationSummary[]> {
-    return apiFetch<ReservationSummary[]>('/proxy/admin/reservations/overdue')
+    return apiFetch<ReservationSummary[]>('/proxy/admin/admin/reservations/overdue')
 }
 
 /**
  * List pending collections (staff only)
  */
 export async function listPendingCollections(): Promise<ReservationSummary[]> {
-    return apiFetch<ReservationSummary[]>('/proxy/admin/reservations/pending')
+    return apiFetch<ReservationSummary[]>('/proxy/admin/admin/reservations/pending')
 }
