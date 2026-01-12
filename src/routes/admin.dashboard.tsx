@@ -101,6 +101,27 @@ function AdminDashboard() {
                                 </div>
                             </Link>
                         </div>
+
+                        {/* Catalogue Management Section */}
+                        <div className="mt-8">
+                            <h2 className="text-xl font-semibold text-gray-900 mb-4">Catalogue Management</h2>
+                            <Link
+                                to="/admin/catalogue"
+                                className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border-l-4 border-green-500 block"
+                            >
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-gray-900">Manage Catalogue</h3>
+                                        <p className="mt-1 text-sm text-gray-600">
+                                            Add, edit, or remove device models and individual devices
+                                        </p>
+                                    </div>
+                                    <svg className="h-8 w-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                    </svg>
+                                </div>
+                            </Link>
+                        </div>
                     </>
                 )}
             </div>
