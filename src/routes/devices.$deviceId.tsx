@@ -1,21 +1,21 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useDeviceModel, useDeviceModelAvailability } from '@/hooks/useCatalogue'
 import { useCreateReservation } from '@/hooks/useReservations'
-import { useAuth0 } from '@auth0/auth0-react'
+import { useAuth } from '@/contexts/AuthContext'
 import { DeviceCategory } from '@/services/types'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
-import { 
-  ArrowLeft, 
-  Loader2, 
-  Laptop, 
-  Tablet, 
-  Camera, 
-  Smartphone, 
-  Keyboard, 
-  Mouse, 
-  BatteryCharging, 
+import {
+  ArrowLeft,
+  Loader2,
+  Laptop,
+  Tablet,
+  Camera,
+  Smartphone,
+  Keyboard,
+  Mouse,
+  BatteryCharging,
   Package,
   Star,
   Calendar,
@@ -52,11 +52,11 @@ const categoryIcons: Record<string, React.ReactNode> = {
   [DeviceCategory.Other]: <Package className="h-24 w-24" />,
 }
 
-function AvailabilityBadge({ 
-  availableCount, 
+function AvailabilityBadge({
+  availableCount,
   totalDevices,
-  isLoading 
-}: { 
+  isLoading
+}: {
   availableCount: number
   totalDevices: number
   isLoading: boolean
@@ -208,7 +208,7 @@ function DeviceDetailContent() {
   const { deviceId } = Route.useParams()
   const { data: deviceModel, isLoading, error } = useDeviceModel(deviceId)
   const { data: availability, isLoading: availabilityLoading } = useDeviceModelAvailability(deviceId)
-  const { isAuthenticated, loginWithRedirect } = useAuth0()
+  const { isAuthenticated, login } = useAuth()
   const [imageError, setImageError] = useState(false)
   const [bookingDialogOpen, setBookingDialogOpen] = useState(false)
 
@@ -246,9 +246,7 @@ function DeviceDetailContent() {
 
   const handleRequestBorrow = () => {
     if (!isAuthenticated) {
-      loginWithRedirect({
-        appState: { returnTo: `/devices/${deviceId}` },
-      })
+      login(`${window.location.origin}/devices/${deviceId}`)
       return
     }
     setBookingDialogOpen(true)
@@ -271,8 +269,8 @@ function DeviceDetailContent() {
                 {categoryIcons[deviceModel.category] || <Package className="h-24 w-24" />}
               </div>
             ) : (
-              <img 
-                src={deviceModel.imageUrl} 
+              <img
+                src={deviceModel.imageUrl}
                 alt={displayName}
                 className="w-full h-full object-cover"
                 onError={() => setImageError(true)}
@@ -349,8 +347,8 @@ function DeviceDetailContent() {
 
           {/* Action Buttons */}
           <div className="flex gap-3 pt-4">
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               className="flex-1"
               onClick={handleRequestBorrow}
               disabled={isAuthenticated && (availabilityLoading || !availability?.canReserve)}

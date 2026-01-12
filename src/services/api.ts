@@ -13,36 +13,32 @@ export class ApiError extends Error {
   }
 }
 
-interface FetchOptions extends RequestInit {
-  token?: string
+interface FetchOptions extends Omit<RequestInit, 'credentials'> {
+  // credentials is always 'include' to send cookies
 }
 
 /**
- * Base fetch wrapper with error handling and auth
+ * Base fetch wrapper with error handling
+ * Cookies are automatically included for authentication
  */
 export async function apiFetch<T>(
   endpoint: string,
   options: FetchOptions = {}
 ): Promise<T> {
-  const { token, ...fetchOptions } = options
-
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   }
 
   // Merge existing headers
-  if (fetchOptions.headers) {
-    const existingHeaders = fetchOptions.headers as Record<string, string>
+  if (options.headers) {
+    const existingHeaders = options.headers as Record<string, string>
     Object.assign(headers, existingHeaders)
   }
 
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`
-  }
-
   const response = await fetch(`${API_URL}${endpoint}`, {
-    ...fetchOptions,
+    ...options,
     headers,
+    credentials: 'include', // Always include cookies for auth
   })
 
   if (!response.ok) {
@@ -67,4 +63,3 @@ export async function apiFetch<T>(
 
   return response.json()
 }
-

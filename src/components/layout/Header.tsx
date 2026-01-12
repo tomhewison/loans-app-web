@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Moon, Sun, LogIn, LogOut, User } from "lucide-react"
 import { useTheme } from "@/contexts/ThemeContext"
-import { useAuth0 } from "@/contexts/AuthContext"
+import { useAuth } from "@/contexts/AuthContext"
 import { Link } from "@tanstack/react-router"
 import tessideLogo from "@/assets/tesside.png"
 import {
@@ -15,14 +15,14 @@ import {
 
 export default function Header() {
   const { isDarkMode, toggleDarkMode } = useTheme()
-  const { isAuthenticated, isLoading, user, loginWithRedirect, logout } = useAuth0()
+  const { isAuthenticated, isLoading, user, login, logout } = useAuth()
 
   const handleLogin = () => {
-    loginWithRedirect()
+    login()
   }
 
   const handleLogout = () => {
-    logout({ logoutParams: { returnTo: window.location.origin } })
+    logout()
   }
 
   // Get user initials for avatar
@@ -55,7 +55,7 @@ export default function Header() {
           </Link>
 
           {isAuthenticated && (
-            <Link 
+            <Link
               to="/reservations"
               className="relative inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border bg-background text-sm hover:bg-accent transition-colors"
               aria-label="View reservations"
@@ -88,14 +88,14 @@ export default function Header() {
           ) : isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button 
+                <button
                   className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-medium hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
                   aria-label="User menu"
                 >
                   {user?.picture ? (
-                    <img 
-                      src={user.picture} 
-                      alt={user.name || "User"} 
+                    <img
+                      src={user.picture}
+                      alt={user.name || "User"}
                       className="w-8 h-8 rounded-full object-cover"
                     />
                   ) : (
@@ -125,9 +125,9 @@ export default function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button 
-              variant="default" 
-              size="sm" 
+            <Button
+              variant="default"
+              size="sm"
               onClick={handleLogin}
               className="gap-1.5"
             >
