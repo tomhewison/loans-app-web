@@ -5,7 +5,7 @@ import type { DashboardStats, ReservationSummary, ReservationFilters } from './t
  * Get dashboard statistics (staff only)
  */
 export async function getDashboardStats(): Promise<DashboardStats> {
-    return apiFetch<DashboardStats>('/proxy/admin/dashboard/stats')
+    return apiFetch<DashboardStats>('/proxy/dashboard/stats')
 }
 
 /**
