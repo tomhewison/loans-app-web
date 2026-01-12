@@ -9,16 +9,19 @@ interface User {
   name?: string
   picture?: string
   nickname?: string
+  roles?: string[]
   [key: string]: unknown
 }
 
 interface AuthContextType {
   user: User | null
   isAuthenticated: boolean
+  isStaff: boolean
   isLoading: boolean
   login: (returnUrl?: string) => void
   logout: (returnUrl?: string) => void
   checkAuthStatus: () => Promise<void>
+  hasRole: (role: string) => boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -71,13 +74,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
     window.location.href = logoutUrl
   }, [])
 
+  const hasRole = useCallback((role: string): boolean => {
+    return user?.roles?.includes(role) ?? false
+  }, [user])
+
   const value: AuthContextType = {
     user,
     isAuthenticated: !!user,
+    isStaff: hasRole('staff'),
     isLoading,
     login,
     logout,
     checkAuthStatus,
+    hasRole,
   }
 
   return (

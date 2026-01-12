@@ -15,7 +15,7 @@ import {
 
 export default function Header() {
   const { isDarkMode, toggleDarkMode } = useTheme()
-  const { isAuthenticated, isLoading, user, login, logout } = useAuth()
+  const { isAuthenticated, isLoading, user, isStaff, login, logout } = useAuth()
 
   const handleLogin = () => {
     login()
@@ -63,6 +63,44 @@ export default function Header() {
               <span className="text-sm">Reservations</span>
               <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[10px] font-semibold">2</span>
             </Link>
+          )}
+
+          {/* Admin Menu (Staff Only) */}
+          {isAuthenticated && isStaff && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="hover:text-primary gap-1.5">
+                  Admin
+                  <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-white text-[9px] font-bold">
+                    ★
+                  </span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuLabel>Admin Tools</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <a href="/admin/dashboard" className="cursor-pointer">
+                    Dashboard
+                  </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a href="/admin/reservations" className="cursor-pointer">
+                    All Reservations
+                  </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a href="/admin/overdue" className="cursor-pointer text-red-600">
+                    Overdue Loans
+                  </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a href="/admin/pending" className="cursor-pointer">
+                    Pending Collections
+                  </a>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
 
           <Link to="/help">

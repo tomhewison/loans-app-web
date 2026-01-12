@@ -165,3 +165,34 @@ export interface ServiceHealth {
   isLoading: boolean
   error: Error | null
 }
+
+// Management service types (staff only)
+export interface DashboardStats {
+  activeLoans: number
+  pendingCollection: number
+  overdueLoans: number
+  returnedToday: number
+  reservationsToday: number
+  calculatedAt: string
+}
+
+export interface ReservationSummary {
+  id: string
+  userId: string
+  userEmail: string
+  deviceId: string
+  deviceModelId: string
+  status: ReservationStatus
+  reservedAt: string
+  expiresAt: string
+  collectedAt?: string
+  returnDueAt?: string
+  returnedAt?: string
+  isOverdue: boolean
+}
+
+export interface ReservationFilters {
+  status?: ReservationStatus
+  userId?: string
+  deviceModelId?: string
+}
