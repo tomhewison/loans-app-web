@@ -67,7 +67,7 @@ export function DeviceModelForm({
           description: deviceModel.description,
           imageUrl: deviceModel.imageUrl || '',
           featured: deviceModel.featured || false,
-          specifications: { ...deviceModel.specifications } || {},
+          specifications: deviceModel.specifications ? { ...deviceModel.specifications } : {},
         })
       } else {
         setFormData({
