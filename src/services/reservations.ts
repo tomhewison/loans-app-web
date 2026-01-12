@@ -14,14 +14,14 @@ export async function getMyReservations(): Promise<Reservation[]> {
  * Get all reservations (staff only - auth via cookie)
  */
 export async function getAllReservations(): Promise<Reservation[]> {
-  return apiFetch<Reservation[]>(BASE_PATH)
+  return apiFetch<Reservation[]>(`${BASE_PATH}/reservations`)
 }
 
 /**
  * Get a specific reservation by ID (auth via cookie)
  */
 export async function getReservation(id: string): Promise<Reservation> {
-  return apiFetch<Reservation>(`${BASE_PATH}/${id}`)
+  return apiFetch<Reservation>(`${BASE_PATH}/reservations/${id}`)
 }
 
 /**
@@ -30,7 +30,7 @@ export async function getReservation(id: string): Promise<Reservation> {
 export async function createReservation(
   params: CreateReservationParams
 ): Promise<Reservation> {
-  return apiFetch<Reservation>(BASE_PATH, {
+  return apiFetch<Reservation>(`${BASE_PATH}/reservations`, {
     method: 'POST',
     body: JSON.stringify(params),
   })
@@ -40,7 +40,7 @@ export async function createReservation(
  * Cancel a reservation (auth via cookie)
  */
 export async function cancelReservation(id: string): Promise<Reservation> {
-  return apiFetch<Reservation>(`${BASE_PATH}/${id}/cancel`, {
+  return apiFetch<Reservation>(`${BASE_PATH}/reservations/${id}/cancel`, {
     method: 'PUT',
   })
 }
