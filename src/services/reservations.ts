@@ -7,21 +7,21 @@ const BASE_PATH = '/proxy/reservations'
  * Get current user's reservations (auth via cookie)
  */
 export async function getMyReservations(): Promise<Reservation[]> {
-  return apiFetch<Reservation[]>(`${BASE_PATH}/my-reservations`)
+  return apiFetch<Reservation[]>(`${BASE_PATH}/me`)
 }
 
 /**
  * Get all reservations (staff only - auth via cookie)
  */
 export async function getAllReservations(): Promise<Reservation[]> {
-  return apiFetch<Reservation[]>(`${BASE_PATH}/reservations`)
+  return apiFetch<Reservation[]>(BASE_PATH)
 }
 
 /**
  * Get a specific reservation by ID (auth via cookie)
  */
 export async function getReservation(id: string): Promise<Reservation> {
-  return apiFetch<Reservation>(`${BASE_PATH}/reservations/${id}`)
+  return apiFetch<Reservation>(`${BASE_PATH}/${id}`)
 }
 
 /**
@@ -30,7 +30,7 @@ export async function getReservation(id: string): Promise<Reservation> {
 export async function createReservation(
   params: CreateReservationParams
 ): Promise<Reservation> {
-  return apiFetch<Reservation>(`${BASE_PATH}/reservations`, {
+  return apiFetch<Reservation>(BASE_PATH, {
     method: 'POST',
     body: JSON.stringify(params),
   })
@@ -40,7 +40,7 @@ export async function createReservation(
  * Cancel a reservation (auth via cookie)
  */
 export async function cancelReservation(id: string): Promise<Reservation> {
-  return apiFetch<Reservation>(`${BASE_PATH}/reservations/${id}/cancel`, {
+  return apiFetch<Reservation>(`${BASE_PATH}/${id}/cancel`, {
     method: 'PUT',
   })
 }
