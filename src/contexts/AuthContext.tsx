@@ -10,6 +10,7 @@ interface User {
   picture?: string
   nickname?: string
   roles?: string[]
+  permissions?: string[]
   [key: string]: unknown
 }
 
@@ -21,7 +22,7 @@ interface AuthContextType {
   login: (returnUrl?: string) => void
   logout: (returnUrl?: string) => void
   checkAuthStatus: () => Promise<void>
-  hasRole: (role: string) => boolean
+  hasPermission: (permission: string) => boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -74,19 +75,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
     window.location.href = logoutUrl
   }, [])
 
-  const hasRole = useCallback((role: string): boolean => {
-    return user?.roles?.includes(role) ?? false
+  const hasPermission = useCallback((permission: string): boolean => {
+    return user?.permissions?.includes(permission) ?? false
+  }, [user])
+
+  // User is considered staff if they have any admin permission
+  const isStaff = useCallback((): boolean => {
+    if (!user?.permissions) return false
+    const adminPermissions = ['read:reservations', 'write:reservations', 'read:devices', 'write:devices']
+    return adminPermissions.some(perm => user.permissions?.includes(perm)) ?? false
   }, [user])
 
   const value: AuthContextType = {
     user,
     isAuthenticated: !!user,
-    isStaff: hasRole('staff'),
+    isStaff: isStaff(),
     isLoading,
     login,
     logout,
     checkAuthStatus,
-    hasRole,
+    hasPermission,
   }
 
   return (

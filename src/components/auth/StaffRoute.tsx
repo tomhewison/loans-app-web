@@ -7,8 +7,8 @@ interface StaffRouteProps {
 }
 
 /**
- * Route guard component that ensures only staff users can access wrapped content
- * Redirects non-staff users to the home page
+ * Route guard component that ensures only users with admin permissions can access wrapped content
+ * Redirects non-admin users to the home page
  */
 export function StaffRoute({ children }: StaffRouteProps) {
     const { isAuthenticated, isStaff, isLoading } = useAuth()
