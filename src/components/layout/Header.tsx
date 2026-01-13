@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Moon, Sun, LogIn, LogOut, User } from "lucide-react"
 import { useTheme } from "@/contexts/ThemeContext"
-import { useAuth0 } from "@/contexts/AuthContext"
+import { useAuth } from "@/contexts/AuthContext"
 import { Link } from "@tanstack/react-router"
 import tessideLogo from "@/assets/tesside.png"
 import {
@@ -15,14 +15,14 @@ import {
 
 export default function Header() {
   const { isDarkMode, toggleDarkMode } = useTheme()
-  const { isAuthenticated, isLoading, user, loginWithRedirect, logout } = useAuth0()
+  const { isAuthenticated, isLoading, user, isStaff, login, logout } = useAuth()
 
   const handleLogin = () => {
-    loginWithRedirect()
+    login()
   }
 
   const handleLogout = () => {
-    logout({ logoutParams: { returnTo: window.location.origin } })
+    logout()
   }
 
   // Get user initials for avatar
@@ -55,7 +55,7 @@ export default function Header() {
           </Link>
 
           {isAuthenticated && (
-            <Link 
+            <Link
               to="/reservations"
               className="relative inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border bg-background text-sm hover:bg-accent transition-colors"
               aria-label="View reservations"
@@ -63,6 +63,44 @@ export default function Header() {
               <span className="text-sm">Reservations</span>
               <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[10px] font-semibold">2</span>
             </Link>
+          )}
+
+          {/* Admin Menu (Staff Only) */}
+          {isAuthenticated && isStaff && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="hover:text-primary gap-1.5">
+                  Admin
+                  <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-white text-[9px] font-bold">
+                    ★
+                  </span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuLabel>Admin Tools</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <a href="/admin/dashboard" className="cursor-pointer">
+                    Dashboard
+                  </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a href="/admin/reservations" className="cursor-pointer">
+                    All Reservations
+                  </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a href="/admin/overdue" className="cursor-pointer text-red-600">
+                    Overdue Loans
+                  </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a href="/admin/pending" className="cursor-pointer">
+                    Pending Collections
+                  </a>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
 
           <Link to="/help">
@@ -88,14 +126,14 @@ export default function Header() {
           ) : isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button 
+                <button
                   className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-medium hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
                   aria-label="User menu"
                 >
                   {user?.picture ? (
-                    <img 
-                      src={user.picture} 
-                      alt={user.name || "User"} 
+                    <img
+                      src={user.picture}
+                      alt={user.name || "User"}
                       className="w-8 h-8 rounded-full object-cover"
                     />
                   ) : (
@@ -108,6 +146,18 @@ export default function Header() {
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">{user?.name}</p>
                     <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+                    {user?.roles && user.roles.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {user.roles.map((role) => (
+                          <span
+                            key={role}
+                            className="px-1.5 py-0.5 rounded-sm bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider"
+                          >
+                            {role}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
@@ -125,9 +175,9 @@ export default function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button 
-              variant="default" 
-              size="sm" 
+            <Button
+              variant="default"
+              size="sm"
               onClick={handleLogin}
               className="gap-1.5"
             >

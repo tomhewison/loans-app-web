@@ -17,6 +17,11 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CatalogueRouteImport } from './routes/catalogue'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DevicesDeviceIdRouteImport } from './routes/devices.$deviceId'
+import { Route as AdminReservationsRouteImport } from './routes/admin.reservations'
+import { Route as AdminPendingRouteImport } from './routes/admin.pending'
+import { Route as AdminOverdueRouteImport } from './routes/admin.overdue'
+import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
+import { Route as AdminCatalogueRouteImport } from './routes/admin.catalogue'
 
 const ReservationsRoute = ReservationsRouteImport.update({
   id: '/reservations',
@@ -58,6 +63,31 @@ const DevicesDeviceIdRoute = DevicesDeviceIdRouteImport.update({
   path: '/devices/$deviceId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminReservationsRoute = AdminReservationsRouteImport.update({
+  id: '/admin/reservations',
+  path: '/admin/reservations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminPendingRoute = AdminPendingRouteImport.update({
+  id: '/admin/pending',
+  path: '/admin/pending',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminOverdueRoute = AdminOverdueRouteImport.update({
+  id: '/admin/overdue',
+  path: '/admin/overdue',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/admin/dashboard',
+  path: '/admin/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminCatalogueRoute = AdminCatalogueRouteImport.update({
+  id: '/admin/catalogue',
+  path: '/admin/catalogue',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -67,6 +97,11 @@ export interface FileRoutesByFullPath {
   '/help': typeof HelpRoute
   '/policies': typeof PoliciesRoute
   '/reservations': typeof ReservationsRoute
+  '/admin/catalogue': typeof AdminCatalogueRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/overdue': typeof AdminOverdueRoute
+  '/admin/pending': typeof AdminPendingRoute
+  '/admin/reservations': typeof AdminReservationsRoute
   '/devices/$deviceId': typeof DevicesDeviceIdRoute
 }
 export interface FileRoutesByTo {
@@ -77,6 +112,11 @@ export interface FileRoutesByTo {
   '/help': typeof HelpRoute
   '/policies': typeof PoliciesRoute
   '/reservations': typeof ReservationsRoute
+  '/admin/catalogue': typeof AdminCatalogueRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/overdue': typeof AdminOverdueRoute
+  '/admin/pending': typeof AdminPendingRoute
+  '/admin/reservations': typeof AdminReservationsRoute
   '/devices/$deviceId': typeof DevicesDeviceIdRoute
 }
 export interface FileRoutesById {
@@ -88,6 +128,11 @@ export interface FileRoutesById {
   '/help': typeof HelpRoute
   '/policies': typeof PoliciesRoute
   '/reservations': typeof ReservationsRoute
+  '/admin/catalogue': typeof AdminCatalogueRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/overdue': typeof AdminOverdueRoute
+  '/admin/pending': typeof AdminPendingRoute
+  '/admin/reservations': typeof AdminReservationsRoute
   '/devices/$deviceId': typeof DevicesDeviceIdRoute
 }
 export interface FileRouteTypes {
@@ -100,6 +145,11 @@ export interface FileRouteTypes {
     | '/help'
     | '/policies'
     | '/reservations'
+    | '/admin/catalogue'
+    | '/admin/dashboard'
+    | '/admin/overdue'
+    | '/admin/pending'
+    | '/admin/reservations'
     | '/devices/$deviceId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -110,6 +160,11 @@ export interface FileRouteTypes {
     | '/help'
     | '/policies'
     | '/reservations'
+    | '/admin/catalogue'
+    | '/admin/dashboard'
+    | '/admin/overdue'
+    | '/admin/pending'
+    | '/admin/reservations'
     | '/devices/$deviceId'
   id:
     | '__root__'
@@ -120,6 +175,11 @@ export interface FileRouteTypes {
     | '/help'
     | '/policies'
     | '/reservations'
+    | '/admin/catalogue'
+    | '/admin/dashboard'
+    | '/admin/overdue'
+    | '/admin/pending'
+    | '/admin/reservations'
     | '/devices/$deviceId'
   fileRoutesById: FileRoutesById
 }
@@ -131,6 +191,11 @@ export interface RootRouteChildren {
   HelpRoute: typeof HelpRoute
   PoliciesRoute: typeof PoliciesRoute
   ReservationsRoute: typeof ReservationsRoute
+  AdminCatalogueRoute: typeof AdminCatalogueRoute
+  AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminOverdueRoute: typeof AdminOverdueRoute
+  AdminPendingRoute: typeof AdminPendingRoute
+  AdminReservationsRoute: typeof AdminReservationsRoute
   DevicesDeviceIdRoute: typeof DevicesDeviceIdRoute
 }
 
@@ -192,6 +257,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DevicesDeviceIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/reservations': {
+      id: '/admin/reservations'
+      path: '/admin/reservations'
+      fullPath: '/admin/reservations'
+      preLoaderRoute: typeof AdminReservationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/pending': {
+      id: '/admin/pending'
+      path: '/admin/pending'
+      fullPath: '/admin/pending'
+      preLoaderRoute: typeof AdminPendingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/overdue': {
+      id: '/admin/overdue'
+      path: '/admin/overdue'
+      fullPath: '/admin/overdue'
+      preLoaderRoute: typeof AdminOverdueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/admin/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/catalogue': {
+      id: '/admin/catalogue'
+      path: '/admin/catalogue'
+      fullPath: '/admin/catalogue'
+      preLoaderRoute: typeof AdminCatalogueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -203,6 +303,11 @@ const rootRouteChildren: RootRouteChildren = {
   HelpRoute: HelpRoute,
   PoliciesRoute: PoliciesRoute,
   ReservationsRoute: ReservationsRoute,
+  AdminCatalogueRoute: AdminCatalogueRoute,
+  AdminDashboardRoute: AdminDashboardRoute,
+  AdminOverdueRoute: AdminOverdueRoute,
+  AdminPendingRoute: AdminPendingRoute,
+  AdminReservationsRoute: AdminReservationsRoute,
   DevicesDeviceIdRoute: DevicesDeviceIdRoute,
 }
 export const routeTree = rootRouteImport

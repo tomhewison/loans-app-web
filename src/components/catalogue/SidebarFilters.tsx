@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Laptop, Tablet, Camera, Package, Grid3x3, X, Calendar, LogIn } from "lucide-react"
 import { useState } from "react"
-import { useAuth0 } from "@/contexts/AuthContext"
+import { useAuth } from "@/contexts/AuthContext"
 
 const categoryIcons: Record<string, React.ReactNode> = {
   All: <Grid3x3 className="h-4 w-4" />,
@@ -14,7 +14,7 @@ const categoryIcons: Record<string, React.ReactNode> = {
 }
 
 export default function SidebarFilters({ categories = [] as string[] }: { categories?: string[] }) {
-  const { isAuthenticated } = useAuth0()
+  const { isAuthenticated } = useAuth()
   const [selectedCategory, setSelectedCategory] = useState<string>("All")
   const [availableOnly, setAvailableOnly] = useState(false)
 
@@ -101,8 +101,8 @@ export default function SidebarFilters({ categories = [] as string[] }: { catego
                         key={preset.label}
                         onClick={() => setSelectedDuration(preset.label)}
                         className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${isActive
-                            ? "bg-primary text-primary-foreground shadow-md"
-                            : "bg-input text-card-foreground hover:bg-accent"
+                          ? "bg-primary text-primary-foreground shadow-md"
+                          : "bg-input text-card-foreground hover:bg-accent"
                           }`}
                         aria-pressed={isActive}
                       >

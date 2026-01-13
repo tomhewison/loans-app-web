@@ -1,4 +1,4 @@
-import { useAuth0 } from "@/contexts/AuthContext"
+import { useAuth } from "@/contexts/AuthContext"
 import type { ReactNode } from "react"
 import { Loader2 } from "lucide-react"
 import UnauthorizedView from "../layout/Unauthorized"
@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { isAuthenticated, isLoading } = useAuth0()
+  const { isAuthenticated, isLoading } = useAuth()
 
   if (isLoading) {
     return (

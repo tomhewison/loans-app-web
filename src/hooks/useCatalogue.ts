@@ -1,17 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useAuth0 } from '@/contexts/AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 import * as catalogueService from '@/services/catalogue'
 import type {
-  // DeviceModel,
-  // Device,
   DeviceModelFilters,
   CreateDeviceModelParams,
   UpdateDeviceModelParams,
   CreateDeviceParams,
   UpdateDeviceParams,
 } from '@/services/types'
-
-const AUTH0_AUDIENCE = import.meta.env.VITE_AUTH0_AUDIENCE
 
 // Query keys for cache management
 export const catalogueKeys = {
@@ -55,18 +51,11 @@ export function useDeviceModel(id: string) {
  * Hook to fetch device availability for a device model (authenticated users)
  */
 export function useDeviceModelAvailability(id: string) {
-  const { getAccessTokenSilently, isAuthenticated } = useAuth0()
+  const { isAuthenticated } = useAuth()
 
   return useQuery({
     queryKey: catalogueKeys.deviceModelAvailability(id),
-    queryFn: async () => {
-      const token = await getAccessTokenSilently({
-        authorizationParams: {
-          audience: AUTH0_AUDIENCE,
-        },
-      })
-      return catalogueService.getDeviceModelAvailability(id, token)
-    },
+    queryFn: () => catalogueService.getDeviceModelAvailability(id),
     enabled: !!id && isAuthenticated,
     // Refresh availability more frequently as it can change
     staleTime: 30 * 1000, // 30 seconds
@@ -82,15 +71,9 @@ export function useDeviceModelAvailability(id: string) {
  */
 export function useCreateDeviceModel() {
   const queryClient = useQueryClient()
-  const { getAccessTokenSilently } = useAuth0()
 
   return useMutation({
-    mutationFn: async (params: CreateDeviceModelParams) => {
-      const token = await getAccessTokenSilently({
-        authorizationParams: { audience: AUTH0_AUDIENCE },
-      })
-      return catalogueService.createDeviceModel(params, token)
-    },
+    mutationFn: (params: CreateDeviceModelParams) => catalogueService.createDeviceModel(params),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: catalogueKeys.deviceModels() })
     },
@@ -102,21 +85,10 @@ export function useCreateDeviceModel() {
  */
 export function useUpdateDeviceModel() {
   const queryClient = useQueryClient()
-  const { getAccessTokenSilently } = useAuth0()
 
   return useMutation({
-    mutationFn: async ({
-      id,
-      params,
-    }: {
-      id: string
-      params: UpdateDeviceModelParams
-    }) => {
-      const token = await getAccessTokenSilently({
-        authorizationParams: { audience: AUTH0_AUDIENCE },
-      })
-      return catalogueService.updateDeviceModel(id, params, token)
-    },
+    mutationFn: ({ id, params }: { id: string; params: UpdateDeviceModelParams }) =>
+      catalogueService.updateDeviceModel(id, params),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: catalogueKeys.deviceModels() })
       queryClient.setQueryData(catalogueKeys.deviceModel(data.id), data)
@@ -129,15 +101,9 @@ export function useUpdateDeviceModel() {
  */
 export function useDeleteDeviceModel() {
   const queryClient = useQueryClient()
-  const { getAccessTokenSilently } = useAuth0()
 
   return useMutation({
-    mutationFn: async (id: string) => {
-      const token = await getAccessTokenSilently({
-        authorizationParams: { audience: AUTH0_AUDIENCE },
-      })
-      return catalogueService.deleteDeviceModel(id, token)
-    },
+    mutationFn: (id: string) => catalogueService.deleteDeviceModel(id),
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: catalogueKeys.deviceModels() })
       queryClient.removeQueries({ queryKey: catalogueKeys.deviceModel(id) })
@@ -153,16 +119,11 @@ export function useDeleteDeviceModel() {
  * Hook to fetch list of all devices (staff only)
  */
 export function useDevices() {
-  const { getAccessTokenSilently, isAuthenticated } = useAuth0()
+  const { isAuthenticated } = useAuth()
 
   return useQuery({
     queryKey: catalogueKeys.deviceList(),
-    queryFn: async () => {
-      const token = await getAccessTokenSilently({
-        authorizationParams: { audience: AUTH0_AUDIENCE },
-      })
-      return catalogueService.listDevices(token)
-    },
+    queryFn: () => catalogueService.listDevices(),
     enabled: isAuthenticated,
   })
 }
@@ -171,16 +132,11 @@ export function useDevices() {
  * Hook to fetch a single device by ID (staff only)
  */
 export function useDevice(id: string) {
-  const { getAccessTokenSilently, isAuthenticated } = useAuth0()
+  const { isAuthenticated } = useAuth()
 
   return useQuery({
     queryKey: catalogueKeys.device(id),
-    queryFn: async () => {
-      const token = await getAccessTokenSilently({
-        authorizationParams: { audience: AUTH0_AUDIENCE },
-      })
-      return catalogueService.getDevice(id, token)
-    },
+    queryFn: () => catalogueService.getDevice(id),
     enabled: !!id && isAuthenticated,
   })
 }
@@ -190,15 +146,9 @@ export function useDevice(id: string) {
  */
 export function useCreateDevice() {
   const queryClient = useQueryClient()
-  const { getAccessTokenSilently } = useAuth0()
 
   return useMutation({
-    mutationFn: async (params: CreateDeviceParams) => {
-      const token = await getAccessTokenSilently({
-        authorizationParams: { audience: AUTH0_AUDIENCE },
-      })
-      return catalogueService.createDevice(params, token)
-    },
+    mutationFn: (params: CreateDeviceParams) => catalogueService.createDevice(params),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: catalogueKeys.devices() })
     },
@@ -210,21 +160,10 @@ export function useCreateDevice() {
  */
 export function useUpdateDevice() {
   const queryClient = useQueryClient()
-  const { getAccessTokenSilently } = useAuth0()
 
   return useMutation({
-    mutationFn: async ({
-      id,
-      params,
-    }: {
-      id: string
-      params: UpdateDeviceParams
-    }) => {
-      const token = await getAccessTokenSilently({
-        authorizationParams: { audience: AUTH0_AUDIENCE },
-      })
-      return catalogueService.updateDevice(id, params, token)
-    },
+    mutationFn: ({ id, params }: { id: string; params: UpdateDeviceParams }) =>
+      catalogueService.updateDevice(id, params),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: catalogueKeys.devices() })
       queryClient.setQueryData(catalogueKeys.device(data.id), data)
@@ -237,19 +176,12 @@ export function useUpdateDevice() {
  */
 export function useDeleteDevice() {
   const queryClient = useQueryClient()
-  const { getAccessTokenSilently } = useAuth0()
 
   return useMutation({
-    mutationFn: async (id: string) => {
-      const token = await getAccessTokenSilently({
-        authorizationParams: { audience: AUTH0_AUDIENCE },
-      })
-      return catalogueService.deleteDevice(id, token)
-    },
+    mutationFn: (id: string) => catalogueService.deleteDevice(id),
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: catalogueKeys.devices() })
       queryClient.removeQueries({ queryKey: catalogueKeys.device(id) })
     },
   })
 }
-

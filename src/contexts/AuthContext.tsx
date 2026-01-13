@@ -1,35 +1,123 @@
-import { Auth0Provider, useAuth0 } from '@auth0/auth0-react'
-import type { ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react'
 
-const domain = import.meta.env.VITE_AUTH0_DOMAIN
-const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID
-const audience = import.meta.env.VITE_AUTH0_AUDIENCE
+// API base URL for auth endpoints
+const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '').replace(/\/proxy$/, '')
+
+interface User {
+  sub: string
+  email?: string
+  name?: string
+  picture?: string
+  nickname?: string
+  roles?: string[]
+  [key: string]: unknown
+}
+
+interface AuthContextType {
+  user: User | null
+  isAuthenticated: boolean
+  isStaff: boolean
+  isLoading: boolean
+  login: (returnUrl?: string) => void
+  logout: (returnUrl?: string) => void
+  checkAuthStatus: () => Promise<void>
+  hasRole: (role: string) => boolean
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 interface AuthProviderProps {
   children: ReactNode
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  if (!domain || !clientId) {
-    console.warn('Auth0 environment variables not configured. Authentication disabled.')
-    return <>{children}</>
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  const checkAuthStatus = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_URL}/auth/status`, {
+        credentials: 'include', // Include cookies
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.isAuthenticated && data.user) {
+          setUser(data.user)
+        } else {
+          setUser(null)
+        }
+      } else {
+        setUser(null)
+      }
+    } catch (error) {
+      console.error('Failed to check auth status:', error)
+      setUser(null)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    checkAuthStatus()
+  }, [checkAuthStatus])
+
+  const login = useCallback((returnUrl?: string) => {
+    const currentUrl = returnUrl || window.location.href
+    const loginUrl = `${API_URL}/auth/login?returnUrl=${encodeURIComponent(currentUrl)}`
+    window.location.href = loginUrl
+  }, [])
+
+  const logout = useCallback((returnUrl?: string) => {
+    const homeUrl = returnUrl || window.location.origin
+    const logoutUrl = `${API_URL}/auth/logout?returnUrl=${encodeURIComponent(homeUrl)}`
+    window.location.href = logoutUrl
+  }, [])
+
+  const hasRole = useCallback((role: string): boolean => {
+    return user?.roles?.includes(role) ?? false
+  }, [user])
+
+  const value: AuthContextType = {
+    user,
+    isAuthenticated: !!user,
+    isStaff: hasRole('staff'),
+    isLoading,
+    login,
+    logout,
+    checkAuthStatus,
+    hasRole,
   }
 
   return (
-    <Auth0Provider
-      domain={domain}
-      clientId={clientId}
-      authorizationParams={{
-        redirect_uri: window.location.origin,
-        audience: audience,
-      }}
-      cacheLocation="localstorage"
-    >
+    <AuthContext.Provider value={value}>
       {children}
-    </Auth0Provider>
+    </AuthContext.Provider>
   )
 }
 
-// Re-export useAuth0 for convenience
-export { useAuth0 }
+/**
+ * Hook to access auth context
+ */
+export function useAuth() {
+  const context = useContext(AuthContext)
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider')
+  }
+  return context
+}
 
+/**
+ * @deprecated Use useAuth instead. This is kept for backwards compatibility during migration.
+ */
+export function useAuth0() {
+  const { user, isAuthenticated, isLoading, login, logout } = useAuth()
+
+  return {
+    user,
+    isAuthenticated,
+    isLoading,
+    loginWithRedirect: login,
+    logout: () => logout(),
+  }
+}

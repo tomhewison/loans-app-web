@@ -43,56 +43,47 @@ export async function getDeviceModel(id: string): Promise<DeviceModel> {
 }
 
 /**
- * Create a new device model (staff only)
+ * Create a new device model (staff only - auth via cookie)
  */
 export async function createDeviceModel(
-  params: CreateDeviceModelParams,
-  token: string
+  params: CreateDeviceModelParams
 ): Promise<DeviceModel> {
   return apiFetch<DeviceModel>(`${BASE_PATH}/device-models`, {
     method: 'POST',
     body: JSON.stringify(params),
-    token,
   })
 }
 
 /**
- * Update an existing device model (staff only)
+ * Update an existing device model (staff only - auth via cookie)
  */
 export async function updateDeviceModel(
   id: string,
-  params: UpdateDeviceModelParams,
-  token: string
+  params: UpdateDeviceModelParams
 ): Promise<DeviceModel> {
   return apiFetch<DeviceModel>(`${BASE_PATH}/device-models/${id}`, {
     method: 'PUT',
     body: JSON.stringify(params),
-    token,
   })
 }
 
 /**
- * Delete a device model (staff only)
+ * Delete a device model (staff only - auth via cookie)
  */
-export async function deleteDeviceModel(
-  id: string,
-  token: string
-): Promise<void> {
+export async function deleteDeviceModel(id: string): Promise<void> {
   return apiFetch<void>(`${BASE_PATH}/device-models/${id}`, {
     method: 'DELETE',
-    token,
   })
 }
 
 /**
- * Get device availability for a device model (authenticated)
+ * Get device availability for a device model (authenticated via cookie)
  * Returns available count and device ID for reservation
  */
 export async function getDeviceModelAvailability(
-  id: string,
-  token: string
+  id: string
 ): Promise<DeviceModelAvailability> {
-  return apiFetch<DeviceModelAvailability>(`${BASE_PATH}/device-models/${id}/availability`, { token })
+  return apiFetch<DeviceModelAvailability>(`${BASE_PATH}/device-models/${id}/availability`)
 }
 
 // ============================================
@@ -100,55 +91,47 @@ export async function getDeviceModelAvailability(
 // ============================================
 
 /**
- * List all devices (staff only)
+ * List all devices (staff only - auth via cookie)
  */
-export async function listDevices(token: string): Promise<Device[]> {
-  return apiFetch<Device[]>(`${BASE_PATH}/devices`, { token })
+export async function listDevices(): Promise<Device[]> {
+  return apiFetch<Device[]>(`${BASE_PATH}/devices`)
 }
 
 /**
- * Get a single device by ID (staff only)
+ * Get a single device by ID (staff only - auth via cookie)
  */
-export async function getDevice(id: string, token: string): Promise<Device> {
-  return apiFetch<Device>(`${BASE_PATH}/devices/${id}`, { token })
+export async function getDevice(id: string): Promise<Device> {
+  return apiFetch<Device>(`${BASE_PATH}/devices/${id}`)
 }
 
 /**
- * Create a new device (staff only)
+ * Create a new device (staff only - auth via cookie)
  */
-export async function createDevice(
-  params: CreateDeviceParams,
-  token: string
-): Promise<Device> {
+export async function createDevice(params: CreateDeviceParams): Promise<Device> {
   return apiFetch<Device>(`${BASE_PATH}/devices`, {
     method: 'POST',
     body: JSON.stringify(params),
-    token,
   })
 }
 
 /**
- * Update an existing device (staff only)
+ * Update an existing device (staff only - auth via cookie)
  */
 export async function updateDevice(
   id: string,
-  params: UpdateDeviceParams,
-  token: string
+  params: UpdateDeviceParams
 ): Promise<Device> {
   return apiFetch<Device>(`${BASE_PATH}/devices/${id}`, {
     method: 'PUT',
     body: JSON.stringify(params),
-    token,
   })
 }
 
 /**
- * Delete a device (staff only)
+ * Delete a device (staff only - auth via cookie)
  */
-export async function deleteDevice(id: string, token: string): Promise<void> {
+export async function deleteDevice(id: string): Promise<void> {
   return apiFetch<void>(`${BASE_PATH}/devices/${id}`, {
     method: 'DELETE',
-    token,
   })
 }
-
