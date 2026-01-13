@@ -93,12 +93,16 @@ export function useReservation(id: string) {
  */
 export function useCreateReservation() {
   const queryClient = useQueryClient()
+  const { user } = useAuth0()
   const getToken = useAccessToken()
 
   return useMutation({
-    mutationFn: async (params: CreateReservationParams) => {
+    mutationFn: async (params: Omit<CreateReservationParams, 'userEmail'>) => {
+      if (!user?.email) {
+        throw new Error('User email not available. Please log in again.')
+      }
       const token = await getToken()
-      return createReservation(params, token)
+      return createReservation({ ...params, userEmail: user.email }, token)
     },
     onSuccess: () => {
       // Invalidate reservations list to refetch

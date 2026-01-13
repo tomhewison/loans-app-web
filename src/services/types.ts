@@ -136,6 +136,7 @@ export interface Reservation {
 export interface CreateReservationParams {
   deviceId: string
   deviceModelId: string
+  userEmail: string
   notes?: string
 }
 
