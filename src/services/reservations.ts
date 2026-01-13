@@ -7,7 +7,7 @@ const BASE_PATH = '/proxy/reservations'
  * Get current user's reservations (auth via cookie)
  */
 export async function getMyReservations(): Promise<Reservation[]> {
-  return apiFetch<Reservation[]>('/proxy/my-reservations')
+  return apiFetch<Reservation[]>('/proxy/reservations/my-reservations')
 }
 
 /**
